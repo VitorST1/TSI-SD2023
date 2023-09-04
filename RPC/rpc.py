@@ -1,19 +1,35 @@
 import socket
 import inspect
 from functools import reduce
+import math
+from multiprocessing import Pool
+import os
 
 class Client:
     def __init__(self, host, port):
         self.socketConnection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socketConnection.connect((host, port))
-        self.BUFFER = 1048
+        self.BUFFER = 1024
 
     def __socketHelper(self, numbers):
         caller = inspect.stack()[1].function
         
         self.socketConnection.send(f"{caller} {' '.join(map(str, numbers))}".encode())
+        
+        data = bytearray()
 
-        return self.socketConnection.recv(self.BUFFER).decode()
+        while True:
+            aux = self.socketConnection.recv(self.BUFFER)
+
+            if not aux:
+                break
+
+            data += aux
+
+            if len(aux) < self.BUFFER:
+                break
+
+        return data.decode()
 
     def sum(self, *numbers):
         return self.__socketHelper(numbers)
@@ -27,22 +43,89 @@ class Client:
     def sub(self, *numbers):
         return self.__socketHelper(numbers)
     
+    def is_prime(self, *numbers):
+        return self.__socketHelper(numbers)
+    
+    def show_prime_in_range(self, begin, end):
+        return self.__socketHelper((begin, end))
+    
+    def show_prime_in_range_multiprocessing(self, begin, end):
+        return self.__socketHelper((begin, end))
+    
     def close(self):
         self.socketConnection.close()
 
+
+class NumberUtils:
+    @staticmethod
+    def is_prime(*numbers):
+        primes = []
+        
+        for num in numbers:
+            if num < 2: # Numbers less than 2 are not prime
+                primes.append(False)
+            else:
+                is_prime = True
+                for i in range(2, int(math.sqrt(num)) + 1):
+                    if num % i == 0:
+                        is_prime = False
+                        break
+                
+                primes.append(is_prime)
+        
+        return primes
+    
+    @staticmethod
+    def number_is_prime(number):
+        if number > 1:
+            for num in range(2, int(number**0.5) + 1):
+                if number % num == 0:
+                    return False
+            return True
+        return False
+
+    @staticmethod
+    def show_prime_in_range(*numbers):
+        begin, end = map(int, numbers)
+
+        ret = []
+
+        for n in range(begin, end):
+            if(NumberUtils.is_prime(n)[0]):
+                ret.append(n)
+
+        return ret
+    
+    @staticmethod
+    def show_prime_in_range_multiprocessing(begin, end):
+        begin = int(begin)
+        end = int(end)
+
+        with Pool(processes=os.cpu_count()) as pool:
+            numbers = range(begin, end + 1)
+            prime_flags = pool.map(NumberUtils.number_is_prime, numbers)
+            prime_numbers = [number[0] for number in zip(numbers, prime_flags) if number [1]]
+        
+        return prime_numbers
+
+
 class Operations:
-    def sum(self, *numbers):
+    @staticmethod
+    def sum(*numbers):
         return reduce(lambda x, y: x + y, numbers)
 
-    def div(self, *numbers):
+    @staticmethod
+    def div(*numbers):
         if numbers.__contains__(0):
             return 0
         return reduce(lambda x, y: x / y, numbers)
-
-    def mul(self, *numbers):
+    
+    @staticmethod
+    def mul(*numbers):
         return reduce(lambda x, y: x * y, numbers)
 
-    def sub(self, *numbers):
+    @staticmethod
+    def sub(*numbers):
         return reduce(lambda x, y: x - y, numbers)
     
 class Server:
@@ -52,10 +135,12 @@ class Server:
             self.HOST = host
             self.PORT = port
             self.BUFFER = 1024
-            self.operations = Operations()
-
+        
         def __operationsHelper(self, operation, *numbers):
-            return getattr(self.operations, operation)(*numbers)
+            return getattr(Operations, operation)(*numbers)
+        
+        def __numberUtilsHelper(self, method, *numbers):
+            return getattr(NumberUtils, method)(*numbers)
 
         def __getCaller(self, data):
             return data.split(' ')[0]
@@ -66,11 +151,28 @@ class Server:
                 numbers.append(float(n))
 
             return numbers
+        
+        def __isOperation(self, caller):
+            operations = (
+                'sum',
+                'mul',
+                'div',
+                'sub'
+            )
+
+            if operations.__contains__(caller):
+                return True
+            
+            return False
 
         def __dataHandler(self, data):
-            operation = self.__getCaller(data)
-            numbers = self.__getNumbers(data)
-            return self.__operationsHelper(operation, *numbers)
+            caller = self.__getCaller(data)
+            if(self.__isOperation(caller)):
+                numbers = self.__getNumbers(data)
+                return self.__operationsHelper(caller, *numbers)
+            else:
+                numbers = self.__getNumbers(data)
+                return self.__numberUtilsHelper(caller, *numbers)
 
         def start(self):
             self.socketConnection.bind((self.HOST, self.PORT))
@@ -80,7 +182,7 @@ class Server:
                 conn, address = self.socketConnection.accept()
                 print("Connection from: " + str(address))
 
-                while True: # loop to receive more than one message from the client
+                while True: # loop to receive multiple messages from the client
                     data = conn.recv(self.BUFFER).decode()
 
                     if not data:
