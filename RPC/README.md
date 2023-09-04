@@ -31,3 +31,18 @@ Para executar o projeto:
 
 O cliente irá se conectar ao servidor e chamar os métodos expostos.
 O servidor ira executar os métodos e retornar os resultados.
+
+## Desenvolvimento
+
+### Semana 1
+
+Implementado o RPC e operações básicas.
+
+### Semana 2
+
+Implementados métodos para verificar se um ou mais números são primos e printar números primos em um range.
+Adicionado também um método para printar números primos utilizando multiprocessamento, printando o tempo levado entre as execuções sequencial e em paralelo.
+
+### Semana 3
+
+Implementado cache em memória no cliente para armazenar resultados das chamadas de métodos remotos anteriormente realizadas. Desta forma, se um mesmo método for chamado várias vezes com os mesmos parâmetros, o resultado será retornado do cache localmente no cliente em vez de fazer nova requisição ao servidor.
