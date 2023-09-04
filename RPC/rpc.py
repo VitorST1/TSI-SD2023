@@ -6,15 +6,21 @@ from multiprocessing import Pool
 import os
 
 class Client:
+    __cache_dict = {}
+
     def __init__(self, host, port):
         self.socketConnection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socketConnection.connect((host, port))
         self.BUFFER = 1024
 
-    def __socketHelper(self, numbers):
-        caller = inspect.stack()[1].function
+    def __getInCache(self, task):
+        if task in self.__cache_dict:
+            return self.__cache_dict[task]
+        else:
+            return None
         
-        self.socketConnection.send(f"{caller} {' '.join(map(str, numbers))}".encode())
+    def __getInServer(self, task):
+        self.socketConnection.send(task.encode())
         
         data = bytearray()
 
@@ -29,28 +35,46 @@ class Client:
             if len(aux) < self.BUFFER:
                 break
 
-        return data.decode()
+        self.__cache_dict[task] = data # add task result to cache
+
+        return data
+
+    def __helper(self, numbers):
+        caller = inspect.stack()[1].function
+
+        task = f"{caller} {' '.join(map(str, numbers))}"
+
+        cache = self.__getInCache(task)
+
+        if(cache != None):
+            print('got from cache')
+            return cache.decode()
+        else:
+            print('got from server')
+            return self.__getInServer(task).decode()
+        
+        
 
     def sum(self, *numbers):
-        return self.__socketHelper(numbers)
+        return self.__helper(numbers)
 
     def div(self, *numbers):
-        return self.__socketHelper(numbers)
+        return self.__helper(numbers)
 
     def mul(self, *numbers):
-        return self.__socketHelper(numbers)
+        return self.__helper(numbers)
 
     def sub(self, *numbers):
-        return self.__socketHelper(numbers)
+        return self.__helper(numbers)
     
     def is_prime(self, *numbers):
-        return self.__socketHelper(numbers)
+        return self.__helper(numbers)
     
     def show_prime_in_range(self, begin, end):
-        return self.__socketHelper((begin, end))
+        return self.__helper((begin, end))
     
     def show_prime_in_range_multiprocessing(self, begin, end):
-        return self.__socketHelper((begin, end))
+        return self.__helper((begin, end))
     
     def close(self):
         self.socketConnection.close()
@@ -74,7 +98,7 @@ class NumberUtils:
                 primes.append(is_prime)
         
         return primes
-    
+        
     @staticmethod
     def number_is_prime(number):
         if number > 1:
@@ -83,7 +107,7 @@ class NumberUtils:
                     return False
             return True
         return False
-
+    
     @staticmethod
     def show_prime_in_range(*numbers):
         begin, end = map(int, numbers)
@@ -191,8 +215,3 @@ class Server:
                     ret = str(self.__dataHandler(data))
 
                     conn.send(ret.encode())
-
-
-            
-
-            
