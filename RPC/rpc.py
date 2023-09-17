@@ -4,20 +4,15 @@ from functools import reduce
 import math
 from multiprocessing import Pool
 import os
+from cache import Cache
+from threading import Thread
 
 class Client:
-    __cache_dict = {}
-
     def __init__(self, host, port):
         self.socketConnection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socketConnection.connect((host, port))
         self.BUFFER = 1024
-
-    def __getInCache(self, task):
-        if task in self.__cache_dict:
-            return self.__cache_dict[task]
-        else:
-            return None
+        self.cache = Cache()
         
     def __getInServer(self, task):
         self.socketConnection.send(task.encode())
@@ -35,7 +30,7 @@ class Client:
             if len(aux) < self.BUFFER:
                 break
 
-        self.__cache_dict[task] = data # add task result to cache
+        self.cache.write(task, data)
 
         return data
 
@@ -44,13 +39,13 @@ class Client:
 
         task = f"{caller} {' '.join(map(str, numbers))}"
 
-        cache = self.__getInCache(task)
+        cache = self.cache.getFromMemory(task)
 
         if(cache != None):
-            print('got from cache')
+            print('getting from cache')
             return cache.decode()
         else:
-            print('got from server')
+            print('getting from server')
             return self.__getInServer(task).decode()
         
         
@@ -77,8 +72,8 @@ class Client:
         return self.__helper((begin, end))
     
     def close(self):
+        self.cache.writeInDisk()
         self.socketConnection.close()
-
 
 class NumberUtils:
     @staticmethod
@@ -191,12 +186,22 @@ class Server:
 
         def __dataHandler(self, data):
             caller = self.__getCaller(data)
+            numbers = self.__getNumbers(data)
             if(self.__isOperation(caller)):
-                numbers = self.__getNumbers(data)
                 return self.__operationsHelper(caller, *numbers)
             else:
-                numbers = self.__getNumbers(data)
                 return self.__numberUtilsHelper(caller, *numbers)
+            
+        def __processData(self, conn):
+            while True: # loop to receive multiple messages from the client
+                data = conn.recv(self.BUFFER).decode()
+
+                if not data:
+                    break
+
+                response = str(self.__dataHandler(data))
+
+                conn.send(response.encode())
 
         def start(self):
             self.socketConnection.bind((self.HOST, self.PORT))
@@ -206,12 +211,7 @@ class Server:
                 conn, address = self.socketConnection.accept()
                 print("Connection from: " + str(address))
 
-                while True: # loop to receive multiple messages from the client
-                    data = conn.recv(self.BUFFER).decode()
+                thread = Thread(target=self.__processData, args=(conn,))
 
-                    if not data:
-                        break
+                thread.start()
 
-                    ret = str(self.__dataHandler(data))
-
-                    conn.send(ret.encode())

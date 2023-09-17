@@ -46,3 +46,7 @@ Adicionado também um método para printar números primos utilizando multiproce
 ### Semana 3
 
 Implementado cache em memória no cliente para armazenar resultados das chamadas de métodos remotos anteriormente realizadas. Desta forma, se um mesmo método for chamado várias vezes com os mesmos parâmetros, o resultado será retornado do cache localmente no cliente em vez de fazer nova requisição ao servidor.
+
+### Semana 4
+
+Implementada a classe Cache, para lidar com toda a lógica de cache no cliente. Agora, o cache é armazenado também em disco. Desta forma, os resultados são persistidos entre execuções do cliente.
