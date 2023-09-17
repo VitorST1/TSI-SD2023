@@ -9,8 +9,8 @@ class Cache:
     def __init__(self):
         self.FILENAME = './cache/cache.pickle'
         self.LIST_FILENAME = './cache/list.pickle'
-        self.SYNC_TIME_LIMIT = 2 # seconds
-        self.TASKS_LIMIT = 3
+        self.SYNC_TIME_LIMIT = 1 # seconds
+        self.TASKS_LIMIT = 5
         self.updatedAt = datetime.now().timestamp()
         self.dict = {}
         self.writeList = []

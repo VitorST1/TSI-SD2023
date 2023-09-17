@@ -50,3 +50,8 @@ Implementado cache em memória no cliente para armazenar resultados das chamadas
 ### Semana 4
 
 Implementada a classe Cache, para lidar com toda a lógica de cache no cliente. Agora, o cache é armazenado também em disco. Desta forma, os resultados são persistidos entre execuções do cliente.
+
+### Semana 5
+
+Refatoração no envio dos dados do servidor e recebimento pelo cliente. Agora os dados são transmitidos utilizando JSON.  
+Implementada operação `last_news_if_barbacena` para coletar o título de um número definido de notícias do site do Campus Barbacena utilizando multithreading.
