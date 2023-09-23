@@ -20,7 +20,12 @@ client = Client(HOST, PORT)
 
 # print(client.is_prime(13, 11, 2))
 
-array = client.last_news_if_barbacena(45) # number of news
+array = client.last_news_if_barbacena(2) # number of news
+for title in array:
+    print(title)
+# time.sleep(5 * 60)
+
+array = client.last_news_if_barbacena(1) # number of news
 for title in array:
     print(title)
 

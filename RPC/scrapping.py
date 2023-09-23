@@ -26,7 +26,6 @@ def get_links(url): #
     return links
 # get_links()
 
-
 ## Padroniza a URL recebida pela API.
 def standardize_url(url: str): #
     if not url.startswith("https://") and not url.startswith("http://"):
@@ -58,7 +57,6 @@ def create_request(url, ssl_cert = True): #
     except Exception:
         return None
 #
-
 
 # Extrai os links da página.
 def create_links_list(url: str, soup: BeautifulSoup): #

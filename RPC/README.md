@@ -55,3 +55,7 @@ Implementada a classe Cache, para lidar com toda a lógica de cache no cliente. 
 
 Refatoração no envio dos dados do servidor e recebimento pelo cliente. Agora os dados são transmitidos utilizando JSON.  
 Implementada operação `last_news_if_barbacena` para coletar o título de um número definido de notícias do site do Campus Barbacena utilizando multithreading.
+
+### Semana 6
+
+O mecanismo de cache na operação `last_news_if_barbacena`, irá lidar com requisições onde o número de notícias solicitadas seja menor que um número previamente solicitado, aproveitando-se dos resultados já obtidos anteriormente. Além disso, foi implementado um mecanismo para atualizar os resultados do cache caso tenha passado 5 minutos desde a ultima requisação à operação `last_news_if_barbacena`, garantindo dados atualizados.

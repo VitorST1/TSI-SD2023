@@ -12,7 +12,7 @@ class Operations:
 
     @staticmethod
     def div(*numbers):
-        if numbers.__contains__(0):
+        if 0 in numbers:
             return 0
         return reduce(lambda x, y: x / y, numbers)
     
@@ -90,7 +90,8 @@ class Operations:
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
             for n in executor.map(scrapping.get_links, urls):
-                resp += n
+                if n:
+                    resp += n
 
         # for i in range(pages):
         #     url = f'https://www.ifsudestemg.edu.br/noticias/barbacena/?b_start:int={ perPage * (i)} '
