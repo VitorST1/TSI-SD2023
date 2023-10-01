@@ -31,17 +31,12 @@ class Cache:
         operation, *params = task.split(" ")
 
         if operation == 'last_news_if_barbacena':
-            if (datetime.now().timestamp() - self.updatedAt) >= self.SCRAPPING_TIME_LIMIT:
+            if ('newsUpdatedAt' in self.dict) and (datetime.now().timestamp() - self.dict['newsUpdatedAt'] >= self.SCRAPPING_TIME_LIMIT):
                 self.clearOperationInMemory(operation)
                 return None
-            for key in self.writeList:
-                keyOperation, keyParams = key.split(" ")
-                if keyOperation == operation and int(keyParams[0]) > int(params[0]):
-                    task = key
-                    break
 
-            if task in self.dict:
-                return self.dict[task][:int(params[0])]
+            if operation in self.dict and len(self.dict[operation]) >= int(params[0]):
+                return self.dict[operation][:int(params[0])]
         else:
             if task in self.dict:
                 return self.dict[task]
@@ -72,10 +67,17 @@ class Cache:
         if len(self.dict) >= self.TASKS_LIMIT + 1:
             first = self.writeList.pop(0)
             del self.dict[first]
-        
-        self.dict[task] = data # add task result to cache
-        self.dict['updatedAt'] = datetime.now().timestamp() # update timestamp
-        self.writeList.append(task)
+
+        operation = task.split(" ")[0]
+
+        if operation == 'last_news_if_barbacena':
+            self.dict[operation] = data
+            self.dict['newsUpdatedAt'] = datetime.now().timestamp()
+            self.writeList.append(operation)
+        else:
+            self.dict[task] = data # add task result to cache
+            self.dict['updatedAt'] = datetime.now().timestamp() # update timestamp
+            self.writeList.append(task)
 
     def writeInDisk(self):
         print('writing to disk')
@@ -84,7 +86,6 @@ class Cache:
                 os.makedirs(os.path.dirname(self.FILENAME), exist_ok=True)
                 with open(self.FILENAME, 'wb') as f:
                     pickle.dump(self.dict, f)
-                self.updatedAt = datetime.now().timestamp()
         
         def saveList():
             with lock:
@@ -105,10 +106,5 @@ class Cache:
             self.writeInDisk()
 
     def clearOperationInMemory(self, operation):
-        for key in self.writeList:
-            keyOperation = key.split(" ")[0]
-            if keyOperation == operation:
-                if key in self.dict:
-                    del self.dict[key]
-        
-    
+        del self.dict[operation]
+        self.writeList.remove(operation)
