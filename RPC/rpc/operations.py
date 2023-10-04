@@ -2,7 +2,7 @@ from functools import reduce
 from multiprocessing import Pool
 import math
 import os
-import scrapping
+import rpc.scrapping as scrapping
 import concurrent.futures
 
 class Operations:

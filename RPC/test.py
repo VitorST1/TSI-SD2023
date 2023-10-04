@@ -1,9 +1,9 @@
 import socket
 import inspect
-from cache import Cache
+from rpc.cache import Cache
 from threading import Thread
 import json
-from operations import Operations
+from rpc.operations import Operations
 
 class Client:
     def __init__(self, host, port):

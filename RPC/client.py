@@ -1,6 +1,6 @@
 # client.py
 
-from rpc import Client
+from rpc.client import Client
 import time
 
 HOST = '127.0.0.1'
@@ -8,7 +8,7 @@ PORT = 5000
 
 client = Client(HOST, PORT)
 
-# print(client.sum(1.5, 50))
+print(client.sum(1.5, 50))
 
 # print(client.div(10, 0))
 
@@ -20,12 +20,14 @@ client = Client(HOST, PORT)
 
 # print(client.is_prime(13, 11, 2))
 
-array = client.last_news_if_barbacena(2) # number of news
-for title in array:
-    print(title)
+# array = client.last_news_if_barbacena(2) # number of news
+# for title in array:
+#     print(title)
+    
 # time.sleep(5 * 60)
+# time.sleep(1)
 
-array = client.last_news_if_barbacena(1) # number of news
+array = client.last_news_if_barbacena(5) # number of news
 for title in array:
     print(title)
 

@@ -59,3 +59,10 @@ Implementada operação `last_news_if_barbacena` para coletar o título de um n�
 ### Semana 6
 
 O mecanismo de cache na operação `last_news_if_barbacena`, irá lidar com requisições onde o número de notícias solicitadas seja menor que um número previamente solicitado, aproveitando-se dos resultados já obtidos anteriormente. Além disso, foi implementado um mecanismo para atualizar os resultados do cache caso tenha passado 5 minutos desde a ultima requisação à operação `last_news_if_barbacena`, garantindo dados atualizados.
+
+### Semana 7
+
+Implementado um servidor de nomes. Agora o cliente conecta no servidor e solicita endereços para determinada operação. A consulta é feita via UDP.  
+O servidor de nomes irá retornar uma lista de endereços de servidores que implementam a operação requisitada pelo cliente, e o cliente irá escolher aleatóriamente um dos servidores para executar a operação. Caso um servidor da lista não esteja disponível, o cliente irá escolher outro servidor.  
+Em caso de erro de conexão ao servidor de nomes, o cliente tem um timeout de 1 segundo.  
+O limite de tentativas de conexão aos servidores de operações é de 5 vezes.

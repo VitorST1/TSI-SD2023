@@ -31,7 +31,7 @@ class Cache:
         operation, *params = task.split(" ")
 
         if operation == 'last_news_if_barbacena':
-            if ('newsUpdatedAt' in self.dict) and (datetime.now().timestamp() - self.dict['newsUpdatedAt'] >= self.SCRAPPING_TIME_LIMIT):
+            if 'newsUpdatedAt' in self.dict and datetime.now().timestamp() - self.dict['newsUpdatedAt'] >= self.SCRAPPING_TIME_LIMIT:
                 self.clearOperationInMemory(operation)
                 return None
 
@@ -80,24 +80,25 @@ class Cache:
             self.writeList.append(task)
 
     def writeInDisk(self):
-        print('writing to disk')
-        def saveCache():
-            with lock:
-                os.makedirs(os.path.dirname(self.FILENAME), exist_ok=True)
-                with open(self.FILENAME, 'wb') as f:
-                    pickle.dump(self.dict, f)
-        
-        def saveList():
-            with lock:
-                os.makedirs(os.path.dirname(self.LIST_FILENAME), exist_ok=True)
-                with open(self.LIST_FILENAME, 'wb') as f:
-                    pickle.dump(self.writeList, f)
+        if(len(self.dict)):
+            print('writing to disk')
+            def saveCache():
+                with lock:
+                    os.makedirs(os.path.dirname(self.FILENAME), exist_ok=True)
+                    with open(self.FILENAME, 'wb') as f:
+                        pickle.dump(self.dict, f)
+            
+            def saveList():
+                with lock:
+                    os.makedirs(os.path.dirname(self.LIST_FILENAME), exist_ok=True)
+                    with open(self.LIST_FILENAME, 'wb') as f:
+                        pickle.dump(self.writeList, f)
 
-        thread1 = Thread(target=saveCache)
-        thread2 = Thread(target=saveList)
+            thread1 = Thread(target=saveCache)
+            thread2 = Thread(target=saveList)
 
-        thread1.start()
-        thread2.start()
+            thread1.start()
+            thread2.start()
 
     def write(self, task, data):
         self.writeInMemory(task, data)
@@ -106,5 +107,10 @@ class Cache:
             self.writeInDisk()
 
     def clearOperationInMemory(self, operation):
-        del self.dict[operation]
-        self.writeList.remove(operation)
+        if operation in self.dict:
+            del self.dict[operation]
+
+        if operation in self.writeList:
+            self.writeList.remove(operation)
+        
+    
