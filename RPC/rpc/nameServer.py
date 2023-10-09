@@ -9,17 +9,23 @@ class NameServer:
         self.HOST = host
         self.PORT = port
         self.BUFFER = 1024
-        self.serversDict = {
-            'sum': [( '127.0.0.1', 6001 )],
-            'sub': [( '127.0.0.1', 6001 )],
-            'mul': [( '127.0.0.1', 6001 )],
-            'div': [( '127.0.0.1', 6001 )],
-            'is_prime': [( '127.0.0.1', 6002 )],
-            'show_prime_in_range': [( '127.0.0.1', 6002 )],
-            'mp_show_prime_in_range': [( '127.0.0.1', 6002 )],
-            'last_news_if_barbacena': [( '127.0.0.1', 6003 ), ( '127.0.0.1', 6004 )],
-        }
+        self.SERVERS_FILENAME = './rpc/nameServer/servers.json'
+        self.serversDict = {}
+
+        # obtém os servidores em arquivo utilizado thread
+        thread = Thread(target=self.getServersFromDisk)
+        thread.start()
+
         print(f'server running on port {port}')
+    
+    def getServersFromDisk(self):
+        try:
+            with open(self.SERVERS_FILENAME) as f:
+                servers = json.load(f)
+        except Exception as e:
+            servers = {}
+            
+        self.serversDict = servers
 
     def start(self):
         self.socketConnection.bind((self.HOST, self.PORT))
