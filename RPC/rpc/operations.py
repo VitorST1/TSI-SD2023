@@ -90,12 +90,9 @@ class Operations:
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
             for n in executor.map(scrapping.get_links, urls):
-                if n:
-                    resp += n
-
-        # for i in range(pages):
-        #     url = f'https://www.ifsudestemg.edu.br/noticias/barbacena/?b_start:int={ perPage * (i)} '
-        #     resp += scrapping.get_links(url)
+                if not n:
+                    break
+                resp += n
         
         resp = resp[0:newsCount]
 

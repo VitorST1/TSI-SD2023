@@ -9,7 +9,7 @@ class Client:
         self._SERVER_TRIES_LIMIT = 5
         self.__nameServerConnection = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # self.nameServerTimeoutCount = 0
-        # self.NAME_SERVER_TIMEOUT_LIMIT = 5
+        self.__NAME_SERVER_TIMEOUT = 1
         self.HOST = host
         self.PORT = port
         self.__BUFFER = 1024
@@ -37,10 +37,9 @@ class Client:
                     serverHost, serverPort = self.__pickServer(servers, excludeServer)
 
                     if serverHost and serverPort:
-                        print(f'getting from server {serverHost}:{serverPort}')
+                        print(f'getting "{caller}" from server {serverHost}:{serverPort}')
                         try:
                             resp = self.__getInServer(task, serverHost, serverPort)
-                            
                             return resp
 
                         except:
@@ -51,7 +50,7 @@ class Client:
         return self.__returnError(caller, 'Server unavailable')
     
     def __getOperationServer(self, operation):
-        self.__nameServerConnection.settimeout(1.0)
+        self.__nameServerConnection.settimeout(self.__NAME_SERVER_TIMEOUT)
         self.__nameServerConnection.sendto(operation.encode(), (self.HOST, self.PORT))
 
         try:

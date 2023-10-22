@@ -4,7 +4,7 @@ import getopt
 import sys
 from rpc.server import Server
 
-HOST = '127.0.0.1'
+HOST = '10.3.1.37'
 PORT = 6001
 
 def main(port):
