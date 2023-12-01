@@ -2,7 +2,7 @@
 
 from rpc.nameServer import NameServer
 
-HOST = '10.3.1.37'
+HOST = 'localhost'
 PORT = 5000
 
 server = NameServer(HOST, PORT)

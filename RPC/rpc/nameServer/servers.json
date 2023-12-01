@@ -1,10 +1,11 @@
 {
-    "sum": [[ "10.3.1.35", 6001 ]],
-    "sub": [[ "10.3.1.35", 6001 ]],
-    "mul": [[ "10.3.1.35", 6001 ]],
-    "div": [[ "10.3.1.35", 6001 ]],
-    "is_prime": [[ "10.3.1.37", 6003 ]],
-    "show_prime_in_range": [[ "10.3.1.37", 6003 ]],
-    "mp_show_prime_in_range": [[ "10.3.1.37", 6003 ]],
-    "last_news_if_barbacena": [[ "10.3.1.37", 6003 ], [ "10.3.1.34", 6001 ]]
+    "sum": [[ "localhost", 6001 ]],
+    "sub": [[ "localhost", 6001 ]],
+    "mul": [[ "localhost", 6001 ]],
+    "div": [[ "localhost", 6001 ]],
+    "is_prime": [[ "localhost", 6001 ]],
+    "show_prime_in_range": [[ "localhost", 6001 ]],
+    "show_prime_in_range_multiprocessing": [[ "localhost", 6001 ]],
+    "last_news_if_barbacena": [[ "localhost", 6001 ], [ "10.3.1.34", 6001 ]],
+    "valida_CPF": [[ "localhost", 6001 ]]
 }

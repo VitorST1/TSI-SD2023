@@ -4,12 +4,14 @@ import getopt
 import sys
 from rpc.server import Server
 
-HOST = '10.3.1.37'
+HOST = 'localhost'
 PORT = 6001
+
 
 def main(port):
     server = Server(HOST, port or PORT)
     server.start()
+
 
 if __name__ == '__main__':
     # Get command line arguments
@@ -20,5 +22,5 @@ if __name__ == '__main__':
     for opt, arg in opts:
         if opt in ("-p", "--port"):
             port = int(arg)
-    
+
     main(port)

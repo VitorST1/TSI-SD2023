@@ -3,7 +3,7 @@
 from rpc.client import Client
 import time
 
-HOST = '10.3.1.37'
+HOST = 'localhost'
 PORT = 5000
 
 client = Client(HOST, PORT)
@@ -27,9 +27,9 @@ print(f'Div: {client.div(10, 2)}')
 
 # time.sleep(5 * 60)
 # time.sleep(1)
-array = client.last_news_if_barbacena(900000)  # number of news
-for title in array:
-    print(title)
+# array = client.last_news_if_barbacena(900000)  # number of news
+# for title in array:
+#     print(title)
 
 # start = time.time()
 # client.show_prime_in_range(10, 1000000)
@@ -39,8 +39,10 @@ for title in array:
 
 # start = time.time()
 # client.show_prime_in_range_multiprocessing(10, 1000000)
-# # print(client.show_prime_in_range_multiprocessing(10, 100000))
+# print(client.show_prime_in_range_multiprocessing(10, 100))
 # end = time.time()
 # print(str(end - start) + '\n')
+
+# print(f'Valida CPF: {client.valida_CPF("53002666807")}')
 
 client.close()
