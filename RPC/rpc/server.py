@@ -17,7 +17,6 @@ class Server:
         self.PORT = port
         self.BUFFER = 1024
         self.LOG_FILENAME = os.path.join('.', 'logs', f'log{host}-{port}.txt')
-        print(self.LOG_FILENAME)
         self.LOG_SEPARATOR = ','
         self.SSL_CONTEXT = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         self.SSL_CERTFILE = "./SSL/rootCA.pem"
