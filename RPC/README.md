@@ -2,6 +2,9 @@
 
 Este projeto contém uma implementação de um RPC entre Cliente e Servidor em Python, utilizando sockets TCP.
 
+![Soma](sum.png)
+![Interface RPC](main.png)
+
 ## Estrutura
 
 O projeto contém a seguinte estrutura:
@@ -66,3 +69,14 @@ Implementado um servidor de nomes. Agora o cliente conecta no servidor e solicit
 O servidor de nomes irá retornar uma lista de endereços de servidores que implementam a operação requisitada pelo cliente, e o cliente irá escolher aleatóriamente um dos servidores para executar a operação. Caso um servidor da lista não esteja disponível, o cliente irá escolher outro servidor.  
 Em caso de erro de conexão ao servidor de nomes, o cliente tem um timeout de 1 segundo.  
 O limite de tentativas de conexão aos servidores de operações é de 5 vezes.
+
+### Semana 8
+
+Implementado o método *valida_cpf*, que retorna *true* caso o CPF recebido seja válido e *false* caso contrário.
+Implementado sistema de log para auditoria, onde um arquivo texto é criado para cada servidor e armazena *timestamp*, *IP do cliente*, *nome da operação* e *tempo de resposta* para cada operação executada.
+Criado shell script que exibe analisa os logs e exibe todos os IPs únicos que fizeram requisições.
+Implementado SSL para criptografia dos dados enviados entre o cliente e o servidor.
+
+### Semana Final
+
+Implementada interface simples com Tkinter, onde o usuário pode selecionar qual operação deseja executar e informar os parâmetros.
