@@ -29,17 +29,19 @@ O script `rpc.py` implementa as classes e métodos utilizados pelo cliente e ser
 
 Para executar o projeto:
 
-1. Execute o servidor: `python server.py`.
-2. Execute o cliente: `python client.py`
+1. Execute o servidor de nomes: `python nameServer.py`.
+2. Execute o servidor de operações: `python server.py`.
+3. Execute o cliente: `python client.py`
 
-O cliente irá se conectar ao servidor e chamar os métodos expostos.
-O servidor ira executar os métodos e retornar os resultados.
+O cliente irá se conectar ao servidor de nomes que retornará para o cliente os servidores que possuem a operação solicitada.
+O cliente irá selecionar aleatoriamente um servidor para executar a operação.
+O servidor de operações ira executar a operação e retornar o resultado.
 
 ## Desenvolvimento
 
 ### Semana 1
 
-Implementado o RPC e operações básicas.
+Implementado o RPC e operações básicas de soma, subtração, divisão e multiplicação.
 
 ### Semana 2
 
